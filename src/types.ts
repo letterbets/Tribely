@@ -104,3 +104,23 @@ export interface CommunityThread {
   timestamp: string;
   tags: string[];
 }
+
+export type BadgeCategory = 'streak' | 'hours' | 'flow' | 'community' | 'mastery';
+export type BadgeTier = 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond';
+
+export interface Badge {
+  id: string;
+  title: string;
+  tagline: string;
+  description: string;
+  category: BadgeCategory;
+  tier: BadgeTier;
+  iconName: string;
+  targetValue: number;
+  currentValue: number;
+  unit: string;
+  unlocked: boolean;
+  unlockedAt?: string;
+  xpReward: number;
+  perkText: string;
+}

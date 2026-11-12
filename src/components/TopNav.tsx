@@ -1,13 +1,14 @@
 import React from 'react';
-import { Compass, CheckCircle2, MessageSquareText } from 'lucide-react';
+import { Compass, CheckCircle2, MessageSquareText, Award } from 'lucide-react';
 
 interface TopNavProps {
-  currentView: 'daily' | 'map' | 'progress' | 'exchange';
-  onSelectView: (view: 'daily' | 'map' | 'progress' | 'exchange') => void;
+  currentView: 'daily' | 'map' | 'progress' | 'exchange' | 'badges';
+  onSelectView: (view: 'daily' | 'map' | 'progress' | 'exchange' | 'badges') => void;
   onOpenCoach: () => void;
   onQuickLog: () => void;
   todayCompleted: boolean;
   activeHobbyName: string;
+  unlockedBadgesCount?: number;
 }
 
 export const TopNav: React.FC<TopNavProps> = ({
@@ -16,6 +17,7 @@ export const TopNav: React.FC<TopNavProps> = ({
   onOpenCoach,
   onQuickLog,
   todayCompleted,
+  unlockedBadgesCount,
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200">
@@ -36,7 +38,7 @@ export const TopNav: React.FC<TopNavProps> = ({
         </div>
 
         {/* Zone 2: Navigation Links (single-line, concise) */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+        <nav className="hidden md:flex items-center gap-7 lg:gap-8 text-sm font-medium">
           <button
             onClick={() => onSelectView('daily')}
             className={`whitespace-nowrap transition-colors py-1 cursor-pointer ${
@@ -71,6 +73,23 @@ export const TopNav: React.FC<TopNavProps> = ({
             }`}
           >
             Relative Progress
+          </button>
+
+          <button
+            onClick={() => onSelectView('badges')}
+            className={`whitespace-nowrap transition-colors py-1 cursor-pointer flex items-center gap-1.5 ${
+              currentView === 'badges'
+                ? 'text-slate-900 font-semibold border-b-2 border-slate-900'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Award className="w-4 h-4 text-amber-500" />
+            <span>Badges</span>
+            {unlockedBadgesCount !== undefined && (
+              <span className="inline-flex items-center justify-center text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded-full">
+                {unlockedBadgesCount}
+              </span>
+            )}
           </button>
 
           <button
@@ -113,10 +132,10 @@ export const TopNav: React.FC<TopNavProps> = ({
       </div>
 
       {/* Mobile sub-navigation bar */}
-      <div className="md:hidden flex items-center justify-around border-t border-slate-100 bg-slate-50 px-2 py-2 text-xs font-medium">
+      <div className="md:hidden flex items-center justify-around border-t border-slate-100 bg-slate-50 px-2 py-2 text-xs font-medium overflow-x-auto">
         <button
           onClick={() => onSelectView('daily')}
-          className={`py-1 px-2.5 rounded-md ${
+          className={`py-1 px-2 rounded-md shrink-0 ${
             currentView === 'daily' ? 'bg-white text-slate-900 font-semibold shadow-xs' : 'text-slate-600'
           }`}
         >
@@ -124,7 +143,7 @@ export const TopNav: React.FC<TopNavProps> = ({
         </button>
         <button
           onClick={() => onSelectView('map')}
-          className={`py-1 px-2.5 rounded-md flex items-center gap-1 ${
+          className={`py-1 px-2 rounded-md shrink-0 flex items-center gap-1 ${
             currentView === 'map' ? 'bg-white text-slate-900 font-semibold shadow-xs' : 'text-slate-600'
           }`}
         >
@@ -133,15 +152,24 @@ export const TopNav: React.FC<TopNavProps> = ({
         </button>
         <button
           onClick={() => onSelectView('progress')}
-          className={`py-1 px-2.5 rounded-md ${
+          className={`py-1 px-2 rounded-md shrink-0 ${
             currentView === 'progress' ? 'bg-white text-slate-900 font-semibold shadow-xs' : 'text-slate-600'
           }`}
         >
           Progress
         </button>
         <button
+          onClick={() => onSelectView('badges')}
+          className={`py-1 px-2 rounded-md shrink-0 flex items-center gap-1 ${
+            currentView === 'badges' ? 'bg-white text-slate-900 font-semibold shadow-xs' : 'text-slate-600'
+          }`}
+        >
+          <Award className="w-3 h-3 text-amber-500" />
+          Badges
+        </button>
+        <button
           onClick={() => onSelectView('exchange')}
-          className={`py-1 px-2.5 rounded-md ${
+          className={`py-1 px-2 rounded-md shrink-0 ${
             currentView === 'exchange' ? 'bg-white text-slate-900 font-semibold shadow-xs' : 'text-slate-600'
           }`}
         >
@@ -151,3 +179,4 @@ export const TopNav: React.FC<TopNavProps> = ({
     </header>
   );
 };
+

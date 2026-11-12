@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Hobby, DailyStep, SocialBookmark } from './types';
 import {
   INITIAL_HOBBIES,
@@ -14,6 +14,7 @@ import { HobbyHeader } from './components/HobbyHeader';
 import { DailyPlanView } from './components/DailyPlanView';
 import { MapView } from './components/MapView';
 import { ProgressView } from './components/ProgressView';
+import { BadgesView } from './components/BadgesView';
 import { TribeExchangeView } from './components/TribeExchangeView';
 import { ChatCoachDrawer } from './components/ChatCoachDrawer';
 import { SocialBookmarkModal } from './components/SocialBookmarkModal';
@@ -22,7 +23,7 @@ import { CheckCircle2 } from 'lucide-react';
 
 export default function App() {
   // Navigation view state
-  const [currentView, setCurrentView] = useState<'daily' | 'map' | 'progress' | 'exchange'>('daily');
+  const [currentView, setCurrentView] = useState<'daily' | 'map' | 'progress' | 'exchange' | 'badges'>('daily');
 
   // Hobbies state with local storage hydration
   const [hobbies, setHobbies] = useState<Hobby[]>(() => {
@@ -123,13 +124,63 @@ export default function App() {
     );
 
     if (isNowCompleted) {
-      showToast(`🎉 15 Minutes Logged! Day ${activeHobby.currentStreak + 1} streak unlocked.`);
+      const nextStreak = activeHobby.currentStreak + 1;
+      const nextHours = Number((activeHobby.totalHours + activeHobby.dailyGoalMins / 60).toFixed(2));
+      if (nextStreak === 7) {
+        showToast(`🎉 7-Day Streak Badge Unlocked! Week Warrior achievement earned.`);
+      } else if (nextHours >= 100) {
+        showToast(`🏆 100 Hours Logged Badge Unlocked! Centurion of Craft.`);
+      } else {
+        showToast(`🎉 15 Minutes Logged! Day ${nextStreak} streak unlocked.`);
+      }
     }
   };
 
   // Quick log from top bar
   const handleQuickLog = () => {
     handleToggleCompleteStep();
+  };
+
+  // Calculate unlocked badges count for nav badge indicator
+  const unlockedBadgesCount = useMemo(() => {
+    const totalHours = Number(hobbies.reduce((sum, h) => sum + (h.totalHours || 0), 0).toFixed(1));
+    const maxStreak = hobbies.reduce((max, h) => Math.max(max, h.currentStreak || 0), 0);
+    const flowMins = hobbies.reduce((sum, h) => sum + (h.flowMinutes || 0), 0);
+    const hobbiesCount = hobbies.length;
+    const bestCohort = hobbies.reduce((max, h) => Math.max(max, h.cohortPercentile || 0), 0);
+
+    let count = 1; // Tribe Scout
+    if (maxStreak >= 1 || hobbies.some((h) => h.todayCompleted)) count++;
+    if (maxStreak >= 3) count++;
+    if (maxStreak >= 7) count++;
+    if (maxStreak >= 14) count++;
+    if (maxStreak >= 30) count++;
+    if (totalHours >= 1) count++;
+    if (totalHours >= 10) count++;
+    if (totalHours >= 25) count++;
+    if (totalHours >= 50) count++;
+    if (totalHours >= 100) count++;
+    if (totalHours >= 250) count++;
+    if (flowMins >= 300) count++;
+    if (flowMins >= 1000) count++;
+    if (hobbiesCount >= 3) count++;
+    if (bestCohort >= 80) count++;
+    return count;
+  }, [hobbies]);
+
+  const handleUpdateHobbyHours = (hobbyId: string, additionalHours: number) => {
+    setHobbies((prev) =>
+      prev.map((h) => {
+        if (h.id === hobbyId) {
+          const newHours = Number((h.totalHours + additionalHours).toFixed(1));
+          return {
+            ...h,
+            totalHours: newHours,
+          };
+        }
+        return h;
+      })
+    );
   };
 
   // When bookmark is digested into a new daily step
@@ -204,6 +255,7 @@ export default function App() {
         onQuickLog={handleQuickLog}
         todayCompleted={activeStep.completed}
         activeHobbyName={activeHobby.name}
+        unlockedBadgesCount={unlockedBadgesCount}
       />
 
       {/* Sub-Header: Active Hobby Switcher & Unboxed Stats */}
@@ -241,6 +293,18 @@ export default function App() {
           <ProgressView
             activeHobby={activeHobby}
             onOpenCoach={() => setCoachOpen(true)}
+            onNavigateToBadges={() => setCurrentView('badges')}
+          />
+        )}
+
+        {currentView === 'badges' && (
+          <BadgesView
+            hobbies={hobbies}
+            activeHobby={activeHobby}
+            dailyStep={activeStep}
+            onOpenCoach={() => setCoachOpen(true)}
+            onQuickLog={handleQuickLog}
+            onUpdateHobbyHours={handleUpdateHobbyHours}
           />
         )}
 

@@ -1,6 +1,8 @@
 {
-  "name": "Tribely - Hobby Coach & Tribe Map",
+  "name": "Remix Tribely - Hobby Coach \u0026 Tribe Map",
   "description": "Motivates people to pick up hobbies in bite-sized 15-minute daily steps, discover nearby HobbyMates in real time, and track relative peer progress.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
