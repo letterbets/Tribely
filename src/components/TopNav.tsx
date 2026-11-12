@@ -26,7 +26,7 @@ export const TopNav: React.FC<TopNavProps> = ({
             onClick={() => onSelectView('daily')}
             className="flex items-center gap-2.5 text-left group cursor-pointer focus-visible:outline-none"
           >
-            <div className="w-8 h-8 rounded-lg bg-emerald-700 flex items-center justify-center text-white shadow-xs group-hover:bg-emerald-800 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center text-white shadow-xs group-hover:bg-purple-700 transition-colors">
               <Compass className="w-4 h-4" />
             </div>
             <span className="text-xl font-bold tracking-tight text-slate-900 whitespace-nowrap font-display">
