@@ -17,11 +17,13 @@ import {
 interface ProgressViewProps {
   activeHobby: Hobby;
   onOpenCoach: () => void;
+  onNavigateToBadges?: () => void;
 }
 
 export const ProgressView: React.FC<ProgressViewProps> = ({
   activeHobby,
   onOpenCoach,
+  onNavigateToBadges,
 }) => {
   // Level tiers definitions
   const tiers = [
@@ -57,6 +59,16 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
         </div>
 
         <div className="flex items-center gap-3 text-xs">
+          {onNavigateToBadges && (
+            <button
+              onClick={onNavigateToBadges}
+              className="bg-amber-50 hover:bg-amber-100 border border-amber-200/90 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-amber-900 font-semibold cursor-pointer transition-colors shadow-xs"
+            >
+              <Award className="w-4 h-4 text-amber-600" />
+              <span>View Badges & Milestones</span>
+            </button>
+          )}
+
           <div className="bg-white border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-slate-700">
             <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
             <span className="font-semibold text-slate-900">{activeHobby.currentStreak} Days</span>
