@@ -83,6 +83,21 @@ export const TopNav: React.FC<TopNavProps> = ({
           >
             Tribe Exchange
           </button>
+
+          {/* new navigation by fyfp */}
+          <button
+            onClick={() => onSelectView('exchange')}
+            className={`whitespace-nowrap transition-colors py-1 cursor-pointer ${
+              currentView === 'exchange'
+                ? 'text-slate-900 font-semibold border-b-2 border-slate-900'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Message Your Friend
+          </button>
+
+
+          
         </nav>
 
         {/* Zone 3: 1 Primary Action with Coach shortcut */}
